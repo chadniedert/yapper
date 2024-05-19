@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Yap;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,7 +17,7 @@ class YapController extends Controller
     public function index(): Response
     {
         return Inertia::render('Yaps/Index', [
-            //
+            'yaps' => Yap::with('user:id,name')->latest()->get(),
         ]);
     }
 
@@ -61,9 +62,17 @@ class YapController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Yap $yap)
+    public function update(Request $request, Yap $yap): RedirectResponse
     {
-        //
+        Gate::authorize('update', $yap);
+
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);
+ 
+        $yap->update($validated);
+ 
+        return redirect(route('yaps.index'));
     }
 
     /**
