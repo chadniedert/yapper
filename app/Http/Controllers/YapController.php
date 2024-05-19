@@ -80,6 +80,10 @@ class YapController extends Controller
      */
     public function destroy(Yap $yap)
     {
-        //
+        Gate::authorize('delete', $yap);
+
+        $yap->delete();
+
+        return redirect(route('yaps.index'));
     }
 }

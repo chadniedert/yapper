@@ -45,7 +45,7 @@ class YapPolicy
      */
     public function delete(User $user, Yap $yap): bool
     {
-        //
+        return $this->update($user, $yap);
     }
 
     /**
